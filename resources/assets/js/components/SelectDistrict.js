@@ -8,8 +8,8 @@ Vue.component('select-district',{
   props:{
     // 用来初始化省市区的值，在编辑时会用到
     initValue:{
-      type: Array,
-      default: () => ([]),
+      type: Array, // 格式是数组
+      default: () => ([]), // 默认是个空数组
     }
   },
   // 定义了这个组件内的数据
