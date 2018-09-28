@@ -11,4 +11,10 @@ class ProductSku extends Model
     public function product(){
       return $this->belongsTo(Product::class);
     }
+
+    public function decreaseStock($amount){
+      if($amount < 0){
+        throw new InternalException()
+      }
+    }
 }
