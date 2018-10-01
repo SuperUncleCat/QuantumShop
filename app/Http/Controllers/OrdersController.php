@@ -48,6 +48,9 @@ class OrdersController extends Controller
           $item->productSku()->associate($sku);
           $item->save();
           $totalAmount += $sku->price * $data['amount'];
+          if($sku->decreaseStock($data['amount']) <= 0){
+            throw new InvalidRequestException('该商品库存不足');
+          }
         }
 
         // 更新订单总金额
@@ -58,6 +61,7 @@ class OrdersController extends Controller
         $user->cartItems()->whereIn('product_sku_id',$skuIdes)->delete();
 
         return $order;
+        
       });
 
       return $order;
