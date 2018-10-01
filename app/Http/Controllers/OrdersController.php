@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\OrderRequest;
 use App\Models\ProductSku;
 use App\Models\UserAddress;
 use App\Models\Order;
 use Carbon\Carbon;
+use App\Jobs\CloseOrder;
 
 class OrdersController extends Controller
 {
@@ -58,11 +58,13 @@ class OrdersController extends Controller
 
         // 将下单的商品从购物车中移除
         $skuIds = collect($request->input('items'))->pluck('sku_id');
-        $user->cartItems()->whereIn('product_sku_id',$skuIdes)->delete();
+        $user->cartItems()->whereIn('product_sku_id',$skuIds)->delete();
 
         return $order;
-        
+
       });
+
+      $this->dispatch(new CloseOrder($order,config('app.order.ttl')));
 
       return $order;
     }
